@@ -1,0 +1,24 @@
+# 복사해서 config/vault.local.yaml 로 사용. 상대 경로는 저장소 루트 기준.
+vault_path: D:/obsidian/daimon123
+writer: false            # 읽기 전용 단계에서는 항상 false (쓰기 도구는 아직 없음)
+
+# 색인·검색·LLM 전송·read_note 모두에서 제외 (폴더 접두어)
+denylist:
+  - "04. Resource/Personal"
+  # 접속 정보가 들어 있는 개별 노트 (파일 경로도 지정 가능)
+  - "05. Archive/03.IntentSecure/접속 정보 및 서버 정보.md"
+  - "05. Archive/04.AstronSecurity/v1 agent/v1 agent 접속 정보.md"
+
+# 색인만 제외 (링크 해석에는 이름이 쓰임)
+index_exclude:
+  - "100.Canvas"
+  - "200.Excalidraw"
+  - "998.Template"
+  - "999.Attached"
+  - ".restructure-log"
+  - ".obsidian"
+  - "sortspec.md"
+
+index_db: data/index.sqlite
+change_store: data/changes     # 다음 단계(변경 보관소)에서 사용
+refresh_interval_sec: 30       # 도구 호출 시 증분 색인 최소 간격

@@ -1,0 +1,31 @@
+import tempfile
+import unittest
+from pathlib import Path
+
+from vault_mcp.config import Config, load_config
+from vault_mcp.vault import Vault, VaultError
+
+
+class FileDenylistTest(unittest.TestCase):
+    def test_file_level_denylist(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d) / "v"
+            (root / "05. Archive/x").mkdir(parents=True)
+            (root / "05. Archive/x/접속 정보.md").write_text("비밀번호 hunter2 쿠버네티스", encoding="utf-8")
+            (root / "05. Archive/x/일반.md").write_text("쿠버네티스 일반 노트 [[접속 정보]]", encoding="utf-8")
+            cfg = Config(vault_path=root, denylist=["05. Archive/x/접속 정보.md"],
+                         db_path=Path(d) / "i.sqlite", refresh_interval_sec=0)
+            v = Vault(cfg); v.refresh(force=True)
+            self.assertEqual([r["path"] for r in v.search("쿠버네티스")], ["05. Archive/x/일반.md"])
+            self.assertEqual(v.search("hunter2"), [])
+            with self.assertRaises(VaultError):
+                v.read_note("05. Archive/x/접속 정보.md")
+            self.assertTrue(v.get_links("05. Archive/x/일반.md")["outgoing"][0]["restricted"])
+
+    def test_local_config_lists_both_notes(self):
+        cfg = load_config(Path(__file__).resolve().parent.parent / "config/vault.example.yaml")
+        self.assertEqual(len([p for p in cfg.denylist if "접속 정보" in p]), 2)
+
+
+if __name__ == "__main__":
+    unittest.main()

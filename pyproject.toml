@@ -1,0 +1,16 @@
+[project]
+name = "vault-mcp"
+version = "0.1.0"
+description = "Obsidian Vault MCP server (read-only core): search, links, tasks"
+requires-python = ">=3.10"
+dependencies = ["pyyaml>=6", "mcp>=1.2"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[project.scripts]
+vault-mcp = "vault_mcp.server:main"
+vault-mcp-cli = "vault_mcp.cli:main"
+
+[tool.setuptools]
+packages = ["vault_mcp"]
