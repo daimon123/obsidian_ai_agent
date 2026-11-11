@@ -37,6 +37,9 @@ class Index:
         self.db.row_factory = sqlite3.Row
         self.db.executescript(SCHEMA)
 
+    def close(self) -> None:
+        self.db.close()
+
     # ---- 파일 목록 --------------------------------------------------------
     def _walk(self):
         """(rel, abs) 전체 파일. 시스템 폴더는 내려가지 않는다."""

@@ -3,7 +3,7 @@ name = "vault-mcp"
 version = "0.1.0"
 description = "Obsidian Vault MCP server (read-only core): search, links, tasks"
 requires-python = ">=3.10"
-dependencies = ["pyyaml>=6", "mcp>=1.2"]
+dependencies = ["pyyaml>=6", "mcp>=1.8,<2"]
 
 [project.optional-dependencies]
 dev = ["pytest>=8"]

@@ -24,11 +24,18 @@ class Vault:
         self.policy = Policy(cfg)
         self.idx = Index(cfg, self.policy)
         self._last_sync = 0.0
-        self.changes = ChangeStore(cfg, self.policy, self.idx)
+        try:
+            self.changes = ChangeStore(cfg, self.policy, self.idx)
+        except Exception:
+            self.idx.close()   # 생성 실패 시 DB 연결을 남기지 않는다 (Windows 파일 잠금)
+            raise
 
     @classmethod
     def from_config(cls, path=None) -> "Vault":
         return cls(load_config(path))
+
+    def close(self) -> None:
+        self.idx.close()
 
     # ---- 색인 -------------------------------------------------------------
     def refresh(self, force: bool = False) -> dict | None:
